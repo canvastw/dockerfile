@@ -16,13 +16,12 @@ RUN apt-get update \
       autoconf \
       libtcmalloc-minimal4 \
     && curl -fSL -o ruby.tar.gz "https://github.com/RubyClickAP/ruby-install/archive/v0.4.3.tar.gz" \
-    && mkdir -p /usr/src \
     && tar -xzf ruby.tar.gz -C /usr/src \
     && rm ruby.tar.gz \
     && cd /usr/src/ruby-install-0.4.3 \
     && make install \
     && ruby-install -p https://gist.github.com/RubyClickAP/2870213e303a98de07216305949f615f/raw/74b8d615550d46a865921ccc8391fd02b01d2de8/railsexpress-1.9.3-p547.patch ruby 1.9.3-p547 -- --enable-shared CFLAGS="-O3" \
-    #&& chmod -w -R /opt/rubies/ruby-1.9.3-p547 \
+    #&& chmod a-w -R /opt/rubies/ruby-1.9.3-p547 \
     && chmod go-w -R /opt/rubies/ruby-1.9.3-p547/bin \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*

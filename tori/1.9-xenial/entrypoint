@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-for file in /usr/src/nginx/{,**/}*.erb; do
+for file in /opt/nginx/{,**/}*.erb; do
   if [ -f "$file" ]; then
     # don't overwrite an existing destination file
     if [ ! -e "${file%.*}" ]; then
@@ -13,4 +13,13 @@ for file in /usr/src/nginx/{,**/}*.erb; do
   fi
 done
 
-exec sudo -E /usr/sbin/nginx -c /usr/src/nginx/nginx.conf
+echo `whoami`
+
+#/etc/init.d/mvideo2 start
+#/etc/init.d/toriqueue start
+
+exec sudo -E /opt/nginx/sbin/nginx -c /opt/nginx/conf/nginx.conf
+
+#exec su - QUEUES=* rake resque:work
+
+#QUEUES=* rake resque:work
