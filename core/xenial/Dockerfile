@@ -5,8 +5,8 @@ FROM ubuntu:xenial
 MAINTAINER Click-AP
 
 ## Create a 'docker' user
-RUN  addgroup --gid 9999 docker \
-  && adduser --uid 9999 --gid 9999 --disabled-password --gecos "Docker User" docker \
+RUN  addgroup --gid 999 docker \
+  && adduser --uid 9999 --gid 999 --disabled-password --gecos "Docker User" docker \
   && usermod -L docker
 
 ## APT setup
