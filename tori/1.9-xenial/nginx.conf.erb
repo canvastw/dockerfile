@@ -15,6 +15,7 @@
   APP_PORT = HTTPS_PORT || HTTP_PORT
   #APP_PORT = 8080
   REDIRECT_PORT = HTTP_PORT != HTTPS_PORT ? HTTP_PORT : nil
+  APP_ROOT_PATH = ENV.fetch('APP_ROOT_PATH', '/opt/yakitory')
 %>
 # Click-AP / Yakitory / Nginx.conf Template generate.
 worker_processes <%= ENV.fetch('NGINX_WORKER_COUNT', (RAILS_ENV == 'production' ? 'auto' : 1)) %>;
@@ -107,14 +108,14 @@ http {
 
     server {
         listen       <%= APP_PORT %>;
-        #server_name  <%= APP_DOMAIN %>;
-        server_name localhost;
+        server_name  <%= APP_DOMAIN %>;
+        #server_name localhost;
         #listen 80 default_server;
         #listen [::]:80 default_server;
 
-        root         <%= ENV.fetch('APP_ROOT_PATH', '/usr/src/app/public') %>;
-        passenger_enabled on;
-        passenger_app_root /usr/src/app;
+        root               <%= APP_ROOT_PATH %>/public;
+        passenger_enabled  on;
+        passenger_app_root <%= APP_ROOT_PATH %>;
 
         <% if CG_ENVIRONMENT != 'local' %>
             add_header Strict-Transport-Security "max-age=31536000" always;
@@ -158,7 +159,7 @@ http {
 
             # Store files to this directory
             # The directory is hashed, subdirectories 0 1 2 3 4 5 6 7 8 9 should exist
-            upload_store /usr/src/app/public/data/tmp_uploads;
+            upload_store <%= APP_ROOT_PATH %>/public/data/tmp_uploads;
 
             # Allow uploaded files to be read only by user
             upload_store_access user:rw group:rw all:rw;

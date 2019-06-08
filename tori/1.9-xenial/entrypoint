@@ -12,14 +12,11 @@ for file in /opt/nginx/{,**/}*.erb; do
     fi
   fi
 done
-
 echo `whoami`
 
 #/etc/init.d/mvideo2 start
 #/etc/init.d/toriqueue start
 
-exec sudo -E /opt/nginx/sbin/nginx -c /opt/nginx/conf/nginx.conf
+#exec sudo -E /opt/nginx/sbin/nginx -c /opt/nginx/conf/nginx.conf
+exec sudo -E /opt/nginx/sbin/nginx -c /opt/nginx/conf/nginx.conf && QUEUES=* rake resque:work
 
-#exec su - QUEUES=* rake resque:work
-
-#QUEUES=* rake resque:work
