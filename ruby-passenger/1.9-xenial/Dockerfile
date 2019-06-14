@@ -7,10 +7,8 @@ MAINTAINER Click-AP
 USER root
 #Install Nginx with Passenger from official repository
 RUN apt-get update \
-    && apt-get install -y unzip sudo libcurl4-openssl-dev \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-# Downloading...
+    && apt-get install -y unzip sudo libcurl4-openssl-dev ffmpeg \
+# Get nginx 
     && curl -fSL -o nginx.tar.gz "http://nginx.org/download/nginx-1.15.2.tar.gz" \
     && tar xvfz nginx.tar.gz -C /usr/src \
     && rm nginx.tar.gz \
@@ -49,7 +47,10 @@ RUN apt-get update \
     && gem install multi_json --no-ri --no-rdoc  -v 1.11.2 \
     && gem install tilt  --no-ri --no-rdoc -v 1.4.1 \
     && passenger-install-nginx-module --auto --languages=ruby --prefix=/opt/nginx --nginx-source-dir=/usr/src/nginx-1.15.2 --extra-configure-flags="--with-http_secure_link_module --add-module='/usr/src/upload-module' --add-module='/usr/src/rtmp-module' --add-module='/usr/src/echo-module' --add-module='/usr/src/headers-more-module' " \
-    && mv /opt/nginx/conf/nginx.conf /opt/nginx/conf/nginx.conf.bk
+    #&& mv /opt/nginx/conf/nginx.conf /opt/nginx/conf/nginx.conf.bk
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* 
+
 
 RUN echo 'docker ALL=(ALL) NOPASSWD: SETENV: /opt/nginx/sbin/nginx' >> /etc/sudoers
 
@@ -58,14 +59,18 @@ RUN passenger-config build-native-support
 
 # Nginx Configuration
 USER root
-COPY nginx.conf.erb /opt/nginx/conf/nginx.conf.erb
+#COPY nginx.conf.erb /opt/nginx/conf/nginx.conf.erb
 #COPY main.d/* /opt/nginx/main.d/
 #RUN curl -fSL -o /opt/nginx/conf/nginx.conf "https://gist.githubusercontent.com/RubyClickAP/45760ee9c11fab4a7e40371bd524b8b3/raw/6c62aa3ab5d76d12d23cb1fadab8b3315a273a82/mvideo2-conf" \
-RUN curl -fSL -o /etc/init.d/mvideo2 "https://gist.githubusercontent.com/RubyClickAP/8b814c7f8a71c0f428baa74ac6fe3426/raw/18938bda11b361950493bbc9ed73f58801160515/etc-init.d-mvideo2-ub" \
-  && chmod +x /etc/init.d/mvideo2 \
-  && ln -sf /dev/stdout /opt/nginx/logs/access.log \
-  && ln -sf /dev/stderr /opt/nginx/logs/error.log \
-  && chown docker:docker -R /opt/nginx
+#RUN curl -fSL -o /etc/init.d/mvideo2 "https://gist.githubusercontent.com/RubyClickAP/8b814c7f8a71c0f428baa74ac6fe3426/raw/18938bda11b361950493bbc9ed73f58801160515/etc-init.d-mvideo2-ub" \
+# &&chmod +x /etc/init.d/mvideo2 
+RUN mkdir -p /opt/nginx/conf.d \
+ && mkdir -p /opt/nginx/main.d \
+ && chown -R docker /opt/nginx \
+ && ln -sf /dev/stdout /opt/nginx/logs/access.log \
+ && ln -sf /dev/stderr /opt/nginx/logs/error.log 
 
-#CMD ["/tini", "--", "/usr/src/entrypoint"]
+USER docker
+EXPOSE 80
 WORKDIR /usr/src/app
+CMD ["/tini", "--", "/usr/src/entrypoint"]
