@@ -5,8 +5,8 @@ FROM ubuntu:xenial
 MAINTAINER Click-AP
 
 ## Create a 'docker' user
-RUN  addgroup --gid 999 docker \
-  && adduser --uid 9999 --gid 999 --disabled-password --gecos "Docker User" docker \
+RUN  addgroup --gid 9999 docker \
+  && adduser --uid 9999 --gid 9999 --disabled-password --gecos "Docker User" docker \
   && usermod -L docker
 
 ## APT setup
@@ -28,9 +28,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/
-
-#RUN echo "Asia/Taipei" | tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata
-
 
 ## Add monitoring checks
 RUN mkdir -p /monitoring/sensu/
