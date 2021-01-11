@@ -2,6 +2,8 @@ FROM alpine
 
 ARG TINI_VERSION=v0.16.1
 
+ENV ENV="/etc/profile"
+
 RUN apk add --no-cache \
   gnupg
 

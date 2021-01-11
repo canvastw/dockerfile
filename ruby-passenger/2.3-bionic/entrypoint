@@ -1,0 +1,21 @@
+#!/bin/bash
+#. /etc/profile.d/rbenv.sh
+set -ex
+
+export RAILS_ENV=production
+echo "Current user: [`whoami`], Ruby version: `ruby -v`..."
+
+for file in /opt/nginx/{,**/}*.erb; do
+  if [ -f "$file" ]; then
+    # don't overwrite an existing destination file
+    if [ ! -e "${file%.*}" ]; then
+      erb -T- "$file" > "${file%.*}"
+      echo "${file%.*}: generated."
+    else
+      >&2 echo "${file%.*}: SKIPPED! refusing to overwrite existing file."
+    fi
+  fi
+done
+
+echo "Current user: [`whoami`], Ruby version: `ruby -v`..."
+exec sudo -E /opt/nginx/sbin/nginx -c /opt/nginx/conf/nginx.conf

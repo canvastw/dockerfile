@@ -2,7 +2,7 @@
 # Tori 1.9-xenial
 
 FROM canvastw/ruby-passenger:1.9-xenial
-MAINTAINER Click-AP
+LABEL MAINTAINER Click-AP
 
 USER root
 ##Install SVN client from official repository

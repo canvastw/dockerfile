@@ -2,7 +2,7 @@
 # Ruby-Passenger 1.9-xenial
 
 FROM canvastw/ruby:1.9-xenial
-MAINTAINER Click-AP
+LABEL MAINTAINER Click-AP
 
 USER root
 #Install Nginx with Passenger from official repository
@@ -59,6 +59,7 @@ RUN passenger-config build-native-support
 
 # Nginx Configuration
 USER root
+COPY entrypoint /usr/src/entrypoint
 #COPY nginx.conf.erb /opt/nginx/conf/nginx.conf.erb
 #COPY main.d/* /opt/nginx/main.d/
 #RUN curl -fSL -o /opt/nginx/conf/nginx.conf "https://gist.githubusercontent.com/RubyClickAP/45760ee9c11fab4a7e40371bd524b8b3/raw/6c62aa3ab5d76d12d23cb1fadab8b3315a273a82/mvideo2-conf" \
