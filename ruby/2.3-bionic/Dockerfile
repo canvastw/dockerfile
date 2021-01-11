@@ -9,7 +9,8 @@ USER root
 RUN mkdir -p /usr/src/app
 RUN chown docker:staff /usr/src/app
 
-RUN apt-get update \
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update -q\
  && apt-get install -yq --no-install-recommends \
       tar wget unzip \
       autoconf \
@@ -77,7 +78,6 @@ RUN . /etc/profile.d/rbenv.sh \
  && gem uninstall rack # smoke test
 
 ENV GEM_HOME /home/docker/.gem/ruby/$RUBY_MAJOR.0
-#ENV PATH $GEM_HOME/bin:$PATH
 ENV RBENV_ROOT=/usr/local/rbenv
 ENV PATH="$GEM_HOME/bin:$RBENV_ROOT/bin:/usr/local/rbenv/shims:$PATH"
 ENV RBENV_SHELL=bash

@@ -7,7 +7,7 @@ ENV GEM_HOME /usr/local/rbenv/versions/2.3.8/lib/ruby/gems/2.3.0
 ENV PATH $GEM_HOME/bin:$PATH
 ENV DEBIAN_FRONTEND=noninteractive
 
-#Install Nginx with Passenger from official repository
+# Install Nginx with Passenger compile.
 RUN apt-get update -q \
     && apt-get install -yq --no-install-recommends sudo \
     # Get nginx 
