@@ -38,7 +38,8 @@ RUN echo 'gem: --user-install --no-document' > ~/.gemrc \
     && gem install stal -v 0.3.0 \
     && gem install activesupport -v 5.2.4.4 \
     && gem install mono_logger -v 1.1.0 \
-    && gem install unix-crypt -v 1.3.0
+    && gem install unix-crypt -v 1.3.0 \
+    && gem install markdown -v 1.2.0
 
 USER root
 # Nginx Configuration
