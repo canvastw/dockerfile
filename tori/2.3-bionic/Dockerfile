@@ -9,7 +9,7 @@ USER root
 #Install SVN client from official repository
 #RUN #echo "deb http://opensource.wandisco.com/ubuntu `lsb_release -cs` svn19" >> /etc/apt/sources.list.d/subversion19.list \
     #&& curl -sS http://opensource.wandisco.com/wandisco-debian.gpg | apt-key add - \
-RUN apt-get update -q && apt-get install -yq --no-install-recommends subversion \
+RUN apt-get update -q && apt-get install -yq --no-install-recommends subversion openjdk-8-jre-headless \
     && svn co --non-interactive --no-auth-cache --quiet http://192.168.50.164/svn/derberus/trunk /opt/derberus \
     && chown -R docker:staff /opt/derberus \
 #    && sed -i 's/Toriredis/localhost/g' /opt/derberus/config/settings.yml \
