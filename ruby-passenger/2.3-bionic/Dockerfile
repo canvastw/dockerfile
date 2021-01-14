@@ -51,21 +51,18 @@ RUN set -ex \
     && export PATH=$GEM_HOME/bin:$PATH \
 # # gem packages
     && gem install --no-document bundler -v 2.2.4 \
+    && gem install dependencies -v 0.0.9 \
+    && gem install sinatra -v 2.1.0 \
+    && gem install sinatra-contrib -v 2.1.0 \
+    && gem install redis -v 4.2.5 \
+    && gem install redis-namespace -v 1.6.0 \
+    && gem install rest-client -v 2.1.0 \
+    && gem install haml -v 5.2.1 \
+    && gem install nest -v 3.2.0 \
+    && gem install stal -v 0.3.0 \
+    && gem install activesupport -v 5.2.4.4 \
 #     && gem install rack -v 2.2.3 \
 #     && gem install rack-protection -v 2.1.0 \
-# # Other gem
-#     && gem install activesupport -v 5.2.4.4 \
-#     && gem install mime-types -v 3.3.1 \
-#     && gem install unix-crypt -v 1.3.0 \
-# # for resque-1.27.4
-#     && gem install mono_logger -v 1.1.0 \
-#     && gem install multi_json -v 1.15.0 \
-#     && gem install tilt -v 2.0.10 \
-#     # 3Jan2021, Because Multi-dependancy, so gem install insted dependencies
-#     && gem install ohm -v 3.1.1 \
-#     && gem install aasm -v 5.1.1 \
-#     && gem install rest-client -v 2.1.0 \
-#     && gem install unix-crypt -v 1.3.0 \
 # Passenger-build
     && gem install --no-document passenger -v 6.0.7 \
     && passenger-install-nginx-module --auto --languages=ruby --prefix=/opt/nginx --nginx-source-dir=/usr/src/nginx-1.18.0 --extra-configure-flags="--with-http_secure_link_module --add-module='/usr/src/upload-module' --add-module='/usr/src/rtmp-module' --add-module='/usr/src/echo-module' --add-module='/usr/src/headers-more-module' " 

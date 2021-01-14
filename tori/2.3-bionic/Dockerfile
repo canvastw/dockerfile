@@ -6,16 +6,20 @@ FROM canvastw/ruby-passenger:2.3-bionic
 LABEL MAINTAINER Click-AP
 
 USER root
+ENV DEBIAN_FRONTEND=noninteractive
 #Install SVN client from official repository
 #RUN #echo "deb http://opensource.wandisco.com/ubuntu `lsb_release -cs` svn19" >> /etc/apt/sources.list.d/subversion19.list \
     #&& curl -sS http://opensource.wandisco.com/wandisco-debian.gpg | apt-key add - \
-RUN apt-get update -q && apt-get install -yq --no-install-recommends subversion openjdk-8-jre-headless \
+RUN apt-get update -q && apt-get install -yq --no-install-recommends subversion \
     && svn co --non-interactive --no-auth-cache --quiet http://192.168.50.164/svn/derberus/trunk /opt/derberus \
     && chown -R docker:staff /opt/derberus \
 #    && sed -i 's/Toriredis/localhost/g' /opt/derberus/config/settings.yml \
     && sed -i 's/localhost/Toriredis/g' /opt/derberus/config/settings.yml \
-    && apt-get install -yq --no-install-recommends redis unoconv \
-#    && timedatectl set-timezone Asia/Taipei \
+    && apt-get install -yq --no-install-recommends openjdk-8-jre-headless libreoffice unoconv tzdata \
+    # Chinese font
+    fontconfig xfonts-utils ttf-wqy-microhei \
+    # timezone && timedatectl set-timezone Asia/Taipei \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata && echo "Asia/Taipei" | tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -37,19 +41,18 @@ RUN echo 'gem: --user-install --no-document' > ~/.gemrc \
     && gem install nest -v 3.2.0 \
     && gem install stal -v 0.3.0 \
     && gem install activesupport -v 5.2.4.4 \
+    # After ruby-passenger:2.3-bionic
     && gem install mono_logger -v 1.1.0 \
     && gem install unix-crypt -v 1.3.0 \
-    && gem install markdown -v 1.2.0
+    #&& gem install markdown -v 1.2.0 \
+    && gem install kramdown -v 2.3.0 \
+    && gem install mail -v 2.7.1
 
 USER root
 # Nginx Configuration
 COPY nginx.conf.erb /opt/nginx/conf/nginx.conf.erb
 COPY location.d/* /opt/nginx/location.d/
 COPY server.d/*   /opt/nginx/server.d/
-
-##RUN git clone https://github.com/RubyClickAP/tori2018.git /usr/src/app
-##RUN svn co -q --non-interactive --no-auth-cache --username admin --password Jack5899!  http://192.168.1.166:18080/svn/yakitory/branches/security2018/ /usr/src/app
-#RUN svn co --non-interactive --no-auth-cache http://192.168.50.164/svn/yakitory/branches/security2018 /opt/yakitory
 
 # entrypoint
 COPY entrypoint /usr/src/entrypoint
@@ -62,15 +65,17 @@ RUN mkdir -p /opt/derberus/log \
     && chmod +x /usr/src/entrypoint \
     && rm /opt/derberus/Gemfile
 
-#COPY toriqueue /etc/init.d/toriqueue
-#RUN chmod +x /etc/init.d/toriqueue \
-    # && curl -sfSL -o /etc/init.d/toriqueue "https://gist.githubusercontent.com/RubyClickAP/f36239c59eb9d5b2f3ba4eeb7064b02b/raw/1ac2708b5e88e0b5a9a2cce54e28cfcb55f890bf/etc-init.d-toriqueue-ub" \
-    # && chmod +x /etc/init.d/toriqueue \
-# Run docker: 
-# docker run -d -p80:80 --name tori2derberus --link Toriredis:redis canvastw/tori-derberus:2.3-bionic
-# After run, You can do smoke test by:
+# docker run -d -p80:80 --name Derberus --link Toriredis:redis moodletw/derverus2020:latest or 
+# docker run -d -p80:80 --name Derberus --restart=always \
+#  -v /home/docside/data:/opt/derberus/public/data   -v /home/docside/drive:/opt/derberus/public/drive \
+#  --link Toriredis:redis moodletw/tory-derberus2020:25
+#
+# After that, You can do smoke test by:
 # QUEUES=* rake resque:work --trace 
+# RAILS_ENV=development QUEUES=* rake resque:work --trace 
 # rackup -o 0.0.0.0
+# http://localhost/api/clients/1/docs?access_key=kiqcmr0dogko09ax
+# curl -i -XPOST -F 'access_key=z4zftourk6794ywi' 'http://192.168.50.63/api/clients/1/docs/upload' -F 'filepath=@test1.doc'
 
 USER docker
 
